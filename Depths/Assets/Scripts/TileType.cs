@@ -2,9 +2,11 @@ using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu(fileName ="TileType", menuName ="Grim/CustomData/"), Serializable]
+[CreateAssetMenu(menuName = "My Assets/TileData")]
 public class TileType : ScriptableObject
 {
     public string tileName;
     public TileBase tileImage;
+    public Valuables containedValuable;
+    public float hardness;
 }
