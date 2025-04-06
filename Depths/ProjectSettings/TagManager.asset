@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Factory
   - FuelDepot
+  - UpgradeShop
+  - RepairDepot
   layers:
   - Default
   - TransparentFX

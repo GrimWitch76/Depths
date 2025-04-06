@@ -1,6 +1,7 @@
 using System.Net;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static UnityEngine.InputSystem.InputSettings;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 _playerMovementInput = Vector2.zero;
     private bool _canSell = false;
     private bool _canRefuel = false;
+    private bool _canRepair = false;
+    private bool _canUpgrade = false;
 
     private void Start()
     {
@@ -86,6 +89,20 @@ public class PlayerController : MonoBehaviour
                 UIManager.Instance.HideFuelPrompt();
                 return;
             }
+
+            if (_canUpgrade)
+            {
+                UIManager.Instance.ToggleUpgradePrompt();
+                return;
+            }
+
+            if(_canRepair)
+            {
+                _canRepair = false;
+                WorldStateManager.Instance.DrillShip.HealHull();
+                UIManager.Instance.HideRepairPrompt();
+                return;
+            }
         }
     }
 
@@ -94,16 +111,27 @@ public class PlayerController : MonoBehaviour
         if (_playerMovementInput == Vector2.up)
         {
             _drillCollider.enabled = false;
-            _playerRB.AddForce(_playerMovementInput * _flightForce, ForceMode2D.Force);
+            _playerRB.AddForce(_playerMovementInput * _flightForce * WorldStateManager.Instance.DrillShip.EnginePower, ForceMode2D.Force);
         }
         else
         {
             _drillCollider.enabled = true;
-            _playerRB.AddForce(_playerMovementInput * _movementForce, ForceMode2D.Force);
+            _playerRB.AddForce(_playerMovementInput * _movementForce * WorldStateManager.Instance.DrillShip.EnginePower, ForceMode2D.Force);
         }
 
         UIManager.Instance.UpdateDepth((int)transform.position.y);
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Vector2 velocity = collision.relativeVelocity;
+
+        if(velocity.magnitude > WorldStateManager.Instance.DrillShip.MinSpeedForDamage)
+        {
+            WorldStateManager.Instance.DrillShip.DamageHull((int)Mathf.Floor(velocity.magnitude));
+        }
+    }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -117,6 +145,18 @@ public class PlayerController : MonoBehaviour
         {
             _canRefuel = true;
             UIManager.Instance.ShowFuelPrompt();
+        }
+
+        if (collision.CompareTag("UpgradeShop"))
+        {
+            _canUpgrade = true;
+            UIManager.Instance.ShowUpgradePrompt();
+        }
+
+        if (collision.CompareTag("RepairDepot"))
+        {
+            _canRepair = true;
+            UIManager.Instance.ShowRepairPrompt();
         }
     }
 
@@ -132,6 +172,18 @@ public class PlayerController : MonoBehaviour
         {
             _canRefuel = false;
             UIManager.Instance.HideFuelPrompt();
+        }
+
+        if (collision.CompareTag("UpgradeShop"))
+        {
+            _canUpgrade = false;
+            UIManager.Instance.HideUpgradePrompt();
+        }
+
+        if (collision.CompareTag("RepairDepot"))
+        {
+            _canRepair = false;
+            UIManager.Instance.HideRepairPrompt();
         }
     }
 }

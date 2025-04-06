@@ -10,3 +10,12 @@ public enum Valuables
     Crystal,
     Anomaly
 }
+
+public enum UpgradeType
+{
+    DrillSpeed,
+    InventorySize,
+    Health,
+    FuelCapacity,
+    MoveSpeed
+}

@@ -7,8 +7,11 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { get; private set; }
 
     [SerializeField] private Inventory _inventory;
+    [SerializeField] private Inventory _upgradeScreen;
     [SerializeField] private RectTransform _sellPrompt;
     [SerializeField] private RectTransform _fuelPrompt;
+    [SerializeField] private RectTransform _repairPrompt;
+    [SerializeField] private RectTransform _upgradePrompt;
     [SerializeField] private TextMeshProUGUI _moneyText;
     [SerializeField] private TextMeshProUGUI _depthText;
 
@@ -68,6 +71,30 @@ public class UIManager : MonoBehaviour
     {
         _fuelPrompt.gameObject.SetActive(false);
     }
+    public void ShowRepairPrompt()
+    {
+        _repairPrompt.gameObject.SetActive(true);
+    }
+
+    public void HideRepairPrompt()
+    {
+        _repairPrompt.gameObject.SetActive(false);
+    }
+
+    public void ShowUpgradePrompt()
+    {
+        _upgradePrompt.gameObject.SetActive(true);
+    }
+
+    public void HideUpgradePrompt()
+    {
+        _upgradePrompt.gameObject.SetActive(false);
+    }
+
+    public void ToggleUpgradePrompt()
+    {
+        _upgradeScreen.gameObject.SetActive(!_upgradeScreen.gameObject.activeInHierarchy);
+    }
 
     public void UpdateHealth(float percent)
     {
@@ -86,7 +113,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateDepth(int depth)
     {
-        _moneyText.text = depth.ToString() + " M";
+        _depthText.text = depth.ToString() + " M";
     }
 
 }
