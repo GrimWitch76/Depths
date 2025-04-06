@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Net;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float _flightForce;
     [SerializeField] Dig _dig;
     [SerializeField] Transform _drillRoot;
+    [SerializeField] DrillShipAnimation _drillAnimation;
 
     private Collider2D _drillCollider;
     private Vector2 _playerMovementInput = Vector2.zero;
@@ -123,19 +125,40 @@ public class PlayerController : MonoBehaviour
             _playerRB.linearDamping = 0.0f;
         }
 
-        if (_playerMovementInput == Vector2.up)
+        if (_playerMovementInput.y >= 0.5f)
         {
             _drillCollider.enabled = false;
             _playerRB.AddForce(_playerMovementInput * _flightForce * WorldStateManager.Instance.DrillShip.EnginePower, ForceMode2D.Force);
+            _drillAnimation.SetFlying(true);
         }
         else
         {
             _drillCollider.enabled = true;
             _playerRB.AddForce(_playerMovementInput * _movementForce * WorldStateManager.Instance.DrillShip.EnginePower, ForceMode2D.Force);
+            _drillAnimation.SetFlying(false);
         }
 
+        if(_playerMovementInput.y < 0 && _playerMovementInput.x == 0)
+        {
+            //Digging Down
+            _drillAnimation.SetDiggingDown(true);
+        }
+        else
+        {
+            _drillAnimation.SetDiggingDown(false);
+        }
+
+        if(_playerMovementInput.x != 0 &&  _playerMovementInput.y == 0)
+        {
+            _drillAnimation.SetDiggingHorizontal(true);
+        }
+        else
+        {
+            _drillAnimation.SetDiggingHorizontal(false);
+        }
 
         UIManager.Instance.UpdateDepth((int)transform.position.y);
+        _drillAnimation.SetInput(_playerMovementInput);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

@@ -41,6 +41,8 @@ public class DrillShip : MonoBehaviour
     [SerializeField] Light _smallLight;
     [SerializeField] Light _spotLight;
     [SerializeField] SonarPulse _sonarPulse;
+    [SerializeField] DrillShipAnimation _animation;
+
 
     float _currentFuel;
     int _currentHealth;
@@ -182,6 +184,7 @@ public class DrillShip : MonoBehaviour
 
     public void ApplyOneTimeUpgrade(OneTimeUpgradeType upgradeType)
     {
+        _animation.EnableUpgrade(upgradeType); 
         switch (upgradeType)
         {
             case OneTimeUpgradeType.FlashLight:
