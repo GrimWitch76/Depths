@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileName: Packed Ice with Silver
   tileImage: {fileID: 11400000, guid: 1588ebe08b73f5045b45922edbe947d5, type: 2}
-  containedValuable: 2
+  containedValuable: {fileID: 11400000, guid: 9323998c4dac40443ad0b31f46fdd157, type: 2}
   hardness: 1.25

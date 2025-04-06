@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileName: Ice with Iron
   tileImage: {fileID: 11400000, guid: e3cb3b1dccca5a6438d6752edb9fb689, type: 2}
-  containedValuable: 1
+  containedValuable: {fileID: 11400000, guid: f709e7577e6ec454abf881be10f009c6, type: 2}
   hardness: 0.75

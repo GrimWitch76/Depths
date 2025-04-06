@@ -9,6 +9,7 @@ public class WorldStateManager : MonoBehaviour
     [SerializeField] private GenerateGroundTiles _worldGenerator;
     [SerializeField] private Grid _worldGrid;
     [SerializeField] private TileMapEffects _tileMapEffects;
+    public DrillShip DrillShip;
 
 
     private Dictionary<Vector2Int, Dictionary<Vector2Int, TileData>> _worldData;
@@ -70,6 +71,22 @@ public class WorldStateManager : MonoBehaviour
         }
         return -1;
     }
+
+    public InventoryItem GetTileValuable(Vector3Int cords)
+    {
+        Vector2Int chunkCoord = ChunkCordsFromWorld(cords);
+        Vector2Int localTileCoord = LocalTileCordsFromWorld(cords);
+
+        if (_worldData.TryGetValue(chunkCoord, out var chunk))
+        {
+            if (chunk.TryGetValue(localTileCoord, out var tile))
+            {
+                return tile.valuable;
+            }
+        }
+        return null;
+    }
+
 
     public void RemoveTile(Vector3Int cords)
     {

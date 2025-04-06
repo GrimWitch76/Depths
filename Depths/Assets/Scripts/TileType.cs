@@ -7,6 +7,6 @@ public class TileType : ScriptableObject
 {
     public string tileName;
     public TileBase tileImage;
-    public Valuables containedValuable;
+    public InventoryItem containedValuable;
     public float hardness;
 }

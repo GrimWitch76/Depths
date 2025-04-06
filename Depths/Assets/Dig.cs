@@ -32,6 +32,11 @@ public class Dig : MonoBehaviour
         if (WorldStateManager.Instance.IsValidTile(cellPos))
         {
             float hardness = WorldStateManager.Instance.GetTileHardness(cellPos);
+            if(hardness == -1)
+            {
+                //Can't dig this block
+                return;
+            }
             _isDigging = true;
             StartCoroutine(Digging(hardness, cellPos));
         }
@@ -66,10 +71,20 @@ public class Dig : MonoBehaviour
             yield return null;
         }
 
+        CheckForValuables(currentCellPos);
         WorldStateManager.Instance.RemoveTileDigEffect(currentCellPos);
         WorldStateManager.Instance.RemoveTile(currentCellPos);
         _isDigging = false;
 
+    }
+
+    private void CheckForValuables(Vector3Int currentCellPos)
+    {
+       var valuable = WorldStateManager.Instance.GetTileValuable(currentCellPos);
+        if(valuable != null)
+        {
+            _playerShip.TryAddItemToInventory(valuable);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

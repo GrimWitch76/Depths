@@ -79,6 +79,7 @@ public class GenerateGroundTiles : MonoBehaviour
                 data.hardness = selectedRule.type.hardness;
                 data.isBroken = false;
                 data.tmpSprite = selectedRule.type.tileImage;
+                data.valuable = selectedRule.type.containedValuable;
                 Vector2Int tilePos = new Vector2Int(x,y);
                 _chunkData.Add(tilePos, data);
             }
