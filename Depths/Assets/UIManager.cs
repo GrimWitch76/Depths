@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -6,6 +8,12 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Inventory _inventory;
     [SerializeField] private RectTransform _sellPrompt;
+    [SerializeField] private RectTransform _fuelPrompt;
+    [SerializeField] private TextMeshProUGUI _moneyText;
+    [SerializeField] private TextMeshProUGUI _depthText;
+
+    [SerializeField] private Image _healthBarFill;
+    [SerializeField] private Image _fuelBarFill;
 
     private void Awake()
     {
@@ -49,6 +57,36 @@ public class UIManager : MonoBehaviour
     public void HideSellPrompt()
     {
         _sellPrompt.gameObject.SetActive(false);
+    }
+
+    public void ShowFuelPrompt()
+    {
+        _fuelPrompt.gameObject.SetActive(true);
+    }
+
+    public void HideFuelPrompt()
+    {
+        _fuelPrompt.gameObject.SetActive(false);
+    }
+
+    public void UpdateHealth(float percent)
+    {
+        _healthBarFill.fillAmount = percent;
+    }
+
+    public void UpdateFuel(float percent)
+    {
+        _fuelBarFill.fillAmount = percent;
+    }
+
+    public void UpdateMoney(int money)
+    {
+        _moneyText.text = "$" + money;
+    }
+
+    public void UpdateDepth(int depth)
+    {
+        _moneyText.text = depth.ToString() + " M";
     }
 
 }

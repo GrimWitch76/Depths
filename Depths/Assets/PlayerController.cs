@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private Collider2D _drillCollider;
     private Vector2 _playerMovementInput = Vector2.zero;
     private bool _canSell = false;
+    private bool _canRefuel = false;
 
     private void Start()
     {
@@ -77,6 +78,14 @@ public class PlayerController : MonoBehaviour
                 UIManager.Instance.HideSellPrompt();
                 return;
             }
+
+            if(_canRefuel)
+            {
+                _canRefuel = false;
+                WorldStateManager.Instance.DrillShip.FillFuelTank();
+                UIManager.Instance.HideFuelPrompt();
+                return;
+            }
         }
     }
 
@@ -92,6 +101,8 @@ public class PlayerController : MonoBehaviour
             _drillCollider.enabled = true;
             _playerRB.AddForce(_playerMovementInput * _movementForce, ForceMode2D.Force);
         }
+
+        UIManager.Instance.UpdateDepth((int)transform.position.y);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -101,6 +112,12 @@ public class PlayerController : MonoBehaviour
             _canSell = true;
             UIManager.Instance.ShowSellPrompt();
         }
+
+        if (collision.CompareTag("FuelDepot"))
+        {
+            _canRefuel = true;
+            UIManager.Instance.ShowFuelPrompt();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -109,6 +126,12 @@ public class PlayerController : MonoBehaviour
         {
             _canSell = false;
             UIManager.Instance.HideSellPrompt();
+        }
+
+        if (collision.CompareTag("FuelDepot"))
+        {
+            _canRefuel = false;
+            UIManager.Instance.HideFuelPrompt();
         }
     }
 }

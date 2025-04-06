@@ -55,7 +55,7 @@ public class Inventory : MonoBehaviour
     {
         foreach (Transform child in _scrollArea)
         {
-            GameObject.Destroy(child.gameObject);
+            Destroy(child.gameObject);
         }
     }
 
