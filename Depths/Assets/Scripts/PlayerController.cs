@@ -72,7 +72,12 @@ public class PlayerController : MonoBehaviour
             UIManager.Instance.ToggleUIVisiblity();
         }
 
-        if(Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            WorldStateManager.Instance.DrillShip.TrySonarPing();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if(_canSell)
             {
@@ -108,6 +113,16 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+
+        if (_playerMovementInput == Vector2.zero)
+        {
+            _playerRB.linearDamping = 1f;
+        }
+        else
+        {
+            _playerRB.linearDamping = 0.0f;
+        }
+
         if (_playerMovementInput == Vector2.up)
         {
             _drillCollider.enabled = false;
@@ -118,6 +133,7 @@ public class PlayerController : MonoBehaviour
             _drillCollider.enabled = true;
             _playerRB.AddForce(_playerMovementInput * _movementForce * WorldStateManager.Instance.DrillShip.EnginePower, ForceMode2D.Force);
         }
+
 
         UIManager.Instance.UpdateDepth((int)transform.position.y);
     }

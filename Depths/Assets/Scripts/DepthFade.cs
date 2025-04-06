@@ -19,6 +19,6 @@ public class DepthFade : MonoBehaviour
         float t = Mathf.InverseLerp(_minDepth, _maxDepth, depth);
         Color ambient = _ambientColourByDepth.Evaluate(t);
         RenderSettings.ambientLight = ambient;
-        _mainLight.intensity = t;
+        _mainLight.intensity = 1-t;
     }
 }

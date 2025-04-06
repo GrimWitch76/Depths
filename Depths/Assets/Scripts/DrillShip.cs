@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Tilemaps;
 
 public class DrillShip : MonoBehaviour
 {
@@ -23,15 +25,23 @@ public class DrillShip : MonoBehaviour
     [SerializeField] float _maxFuel;
     [SerializeField] float _passiveDrainRate;
     [SerializeField] float _movementDrainRateMod;
+    [SerializeField] float _sonarCoolDown;
     [SerializeField] int _minSpeedForDamage;
     [SerializeField] int _maxHealth;
     [SerializeField] int _currentArmour;
     [SerializeField] int _inventorySlots;
     [SerializeField] int _money;
 
+
+    [SerializeField] Light _smallLight;
+    [SerializeField] Light _spotLight;
+
     float _currentFuel;
     int _currentHealth;
     private bool _isMoving = false;
+    private bool _advancedFlashLightUnlocked = false;
+    private bool _sonarUnlocked = true;
+    private bool _sonarOffCooldown = true;
 
     private void Start()
     {
@@ -53,6 +63,12 @@ public class DrillShip : MonoBehaviour
         }
 
         ChangeFuelLevel(finalFuelDrain *-1);
+
+        _smallLight.enabled = transform.position.y <= -50;
+        if(_advancedFlashLightUnlocked )
+        {
+            _smallLight.enabled = transform.position.y <= -50;
+        }
     }
 
     public bool TryAddItemToInventory(InventoryItem item)
@@ -153,5 +169,28 @@ public class DrillShip : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void TrySonarPing()
+    {
+        if(!_sonarUnlocked || !_sonarOffCooldown)
+        {
+            return;
+        }
+        
+        _sonarOffCooldown = false;
+        WorldStateManager.Instance.SonarPing(transform.position);
+        StartCoroutine(SonarCoolDown());
+    }
+
+    private IEnumerator SonarCoolDown()
+    {
+        float timer = 0;
+        while(timer <= _sonarCoolDown)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        _sonarOffCooldown = true; 
     }
 }

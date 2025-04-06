@@ -15,6 +15,7 @@ public class GenerateGroundTiles : MonoBehaviour
 
     [SerializeField] private Transform _worldRoot;
     [SerializeField] private Transform _chunkPrefab;
+    [SerializeField] private Light _lightPrefab;
     [SerializeField] private List<TileGenerationRules> _genRules;
 
     public Dictionary<Vector2Int, Dictionary<Vector2Int, TileData>> GenerateWorld()
@@ -27,7 +28,7 @@ public class GenerateGroundTiles : MonoBehaviour
         {
             for (int x = 0; x < chunksPerWidth; x++)
             {
-                //TODO CHANGE
+                //TODO CHANGE TO GENERATE AS THE GAME RUNS? 
                 var chunkData = GenerateChunk(new Vector2Int(x* _chunkSize, y*_chunkSize));
 
                 //Add chunk data to world
@@ -72,6 +73,7 @@ public class GenerateGroundTiles : MonoBehaviour
             for(int y = 0; y < _chunkSize; y++)
             {
                 int globalY = chunkWorldY + y; // Chunk start plus current y pos in chunk;
+                int globalX = chunkCord.x + x; // Chunk start plus current y pos in chunk;
                 TileGenerationRules selectedRule = PickTileForDepth(globalY);
 
                 //This will pull from an array of valid tile data in each world gen data chunk. For now lets manually set it
@@ -80,6 +82,13 @@ public class GenerateGroundTiles : MonoBehaviour
                 data.isBroken = false;
                 data.tmpSprite = selectedRule.type.tileImage;
                 data.valuable = selectedRule.type.containedValuable;
+                if(selectedRule.type.Light != null)
+                {
+                    Light newLight = GameObject.Instantiate<Light>(selectedRule.type.Light);
+                    newLight.name = selectedRule.name;
+                    newLight.transform.position = new Vector3(globalX + (.5f), (globalY - .5f)*-1, -0.25f);
+                    data.light = newLight;
+                }
                 Vector2Int tilePos = new Vector2Int(x,y);
                 _chunkData.Add(tilePos, data);
             }

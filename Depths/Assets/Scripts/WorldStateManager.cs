@@ -1,5 +1,7 @@
 using Mono.Cecil.Cil;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -8,6 +10,8 @@ public class WorldStateManager : MonoBehaviour
 {
     [SerializeField] private GenerateGroundTiles _worldGenerator;
     [SerializeField] private Grid _worldGrid;
+    [SerializeField] private Tilemap _highLightEffectGrid;
+    [SerializeField] private TileBase _highLightEffect;
     [SerializeField] private TileMapEffects _tileMapEffects;
     public DrillShip DrillShip;
 
@@ -115,6 +119,28 @@ public class WorldStateManager : MonoBehaviour
         _tileMapEffects.SetTile(cords, null);
     }
 
+    public void SonarPing(Vector3 playerPos)
+    {
+        Vector3Int centerCell = GridPosFromWorld(playerPos);
+        int radius = 10;
+
+        for (int dx = -radius; dx <= radius; dx++)
+        {
+            for (int dy = -radius; dy <= radius; dy++)
+            {
+                Vector3Int checkCell = new Vector3Int(centerCell.x + dx, centerCell.y + dy, 0);
+
+                float distance = Vector2Int.Distance(new Vector2Int(dx, dy), Vector2Int.zero);
+                if (distance > radius) continue;
+
+                InventoryItem tile = GetTileValuable(checkCell); // Your method for fetching from world
+                if (tile == null) continue;
+
+                HighLightCell(checkCell); // See below
+            }
+        }
+    }
+
     public Vector3Int GridPosFromWorld(Vector3 worldPos)
     {
         return _worldGrid.WorldToCell(worldPos);
@@ -141,4 +167,35 @@ public class WorldStateManager : MonoBehaviour
         );
     }
 
+    private TileData GetTileData(Vector3Int cords)
+    {
+        Vector2Int chunkCoord = ChunkCordsFromWorld(cords);
+        Vector2Int localTileCoord = LocalTileCordsFromWorld(cords);
+
+        if (_worldData.TryGetValue(chunkCoord, out var chunk))
+        {
+            if (chunk.TryGetValue(localTileCoord, out var tile))
+            {
+                return tile;
+            }
+        }
+        return null;
+    }
+
+    private void HighLightCell(Vector3Int cords)
+    {
+        _highLightEffectGrid.SetTile(cords, _highLightEffect);
+        StartCoroutine(HighLightTimer(cords));
+    }
+
+    private IEnumerator HighLightTimer(Vector3Int cords)
+    {
+        float timePassed = 0;
+        while(timePassed <= 5)
+        {
+            yield return null;
+            timePassed += Time.deltaTime;
+        }
+        _highLightEffectGrid.SetTile(cords, null);
+    }
 }

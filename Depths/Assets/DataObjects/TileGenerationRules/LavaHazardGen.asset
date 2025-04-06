@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: DarkIce_Gen
-  m_EditorClassIdentifier: Assembly-CSharp::TileGenerationRules
-  type: {fileID: 11400000, guid: 1a22d859b2320aa47bb3cc7a5893028c, type: 2}
-  minDepth: 25
+  m_Script: {fileID: 11500000, guid: 0bf6c5a0748305544a119eab692ed633, type: 3}
+  m_Name: LavaHazardGen
+  m_EditorClassIdentifier: 
+  type: {fileID: 11400000, guid: 76eeaaa21876b894b93221ce71c568a6, type: 2}
+  minDepth: 200
   maxDepth: 1024
-  spawnChance: 0.6
+  spawnChance: 0.005
