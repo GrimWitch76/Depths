@@ -17,6 +17,11 @@ public class DrillShip : MonoBehaviour
     public int InventorySlots => _inventorySlots;
     public int Money => _money;
 
+    public bool AdvancedFlashLightUnlocked => _advancedFlashLightUnlocked;
+    public bool SonarUpgrade => _sonarUnlocked;
+    public bool ThermalProtectionUpgrade => _thermalInsulationUnlocked;
+    public bool BlastProtectionUpgrade => _blastProtectionUnlocked;
+
     private List<InventoryItem> _inventory;
 
 
@@ -35,18 +40,23 @@ public class DrillShip : MonoBehaviour
 
     [SerializeField] Light _smallLight;
     [SerializeField] Light _spotLight;
+    [SerializeField] SonarPulse _sonarPulse;
 
     float _currentFuel;
     int _currentHealth;
     private bool _isMoving = false;
     private bool _advancedFlashLightUnlocked = false;
-    private bool _sonarUnlocked = true;
+    private bool _sonarUnlocked = false;
+    private bool _thermalInsulationUnlocked = false;
+    private bool _blastProtectionUnlocked = true;
     private bool _sonarOffCooldown = true;
+    private Vector3 _emergancyWarpLocation;
 
     private void Start()
     {
         _currentFuel = _maxFuel;
         _currentHealth = _maxHealth;
+        _emergancyWarpLocation = transform.position;
     }
 
     public void SetIsMoving(bool isMoving)
@@ -121,7 +131,7 @@ public class DrillShip : MonoBehaviour
         UIManager.Instance.UpdateHealth((float)_currentHealth / (float)_maxHealth);
         if(_currentHealth <= 0)
         {
-            //Dead :(
+            EmergancyWarp();
         }
     }
 
@@ -141,8 +151,7 @@ public class DrillShip : MonoBehaviour
 
         if(_currentFuel <= 0)
         {
-            //Uh oh shit well you lost I guess?
-            //TODO Add loss condition
+            EmergancyWarp();
         }
     }
 
@@ -171,6 +180,27 @@ public class DrillShip : MonoBehaviour
         }
     }
 
+    public void ApplyOneTimeUpgrade(OneTimeUpgradeType upgradeType)
+    {
+        switch (upgradeType)
+        {
+            case OneTimeUpgradeType.FlashLight:
+                _advancedFlashLightUnlocked = true;
+                break;
+            case OneTimeUpgradeType.Sonar:
+                _sonarUnlocked = true;
+                break;
+            case OneTimeUpgradeType.ThermalInsulation:
+                _thermalInsulationUnlocked = true;
+                break;
+            case OneTimeUpgradeType.BlastProtection:
+                _blastProtectionUnlocked = true;
+                break;
+            default:
+                break;
+        }
+    }
+
     public void TrySonarPing()
     {
         if(!_sonarUnlocked || !_sonarOffCooldown)
@@ -180,6 +210,7 @@ public class DrillShip : MonoBehaviour
         
         _sonarOffCooldown = false;
         WorldStateManager.Instance.SonarPing(transform.position);
+        _sonarPulse.StartPulse();
         StartCoroutine(SonarCoolDown());
     }
 
@@ -192,5 +223,18 @@ public class DrillShip : MonoBehaviour
             yield return null;
         }
         _sonarOffCooldown = true; 
+    }
+
+    private void EmergancyWarp()
+    {
+        _currentFuel = _maxFuel / 2;
+        _currentHealth = _maxHealth / 2;
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        rb.linearVelocity = Vector2.zero;
+        transform.position = _emergancyWarpLocation;
+
+        UIManager.Instance.UpdateHealth(0.5f);
+        UIManager.Instance.UpdateFuel(0.5f);
     }
 }

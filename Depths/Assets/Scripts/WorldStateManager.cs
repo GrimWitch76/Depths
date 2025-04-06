@@ -13,11 +13,12 @@ public class WorldStateManager : MonoBehaviour
     [SerializeField] private Tilemap _highLightEffectGrid;
     [SerializeField] private TileBase _highLightEffect;
     [SerializeField] private TileMapEffects _tileMapEffects;
+    [SerializeField] private float _sonarTime;
     public DrillShip DrillShip;
 
 
-    private Dictionary<Vector2Int, Dictionary<Vector2Int, TileData>> _worldData;
-    private Dictionary<Vector2Int, Tilemap> _worldVisualData;
+    public Dictionary<Vector2Int, Dictionary<Vector2Int, TileData>> _worldData;
+    public Dictionary<Vector2Int, Tilemap> _worldVisualData;
 
 
     public static WorldStateManager Instance { get; private set; }
@@ -43,6 +44,7 @@ public class WorldStateManager : MonoBehaviour
     {
 
         _worldData = _worldGenerator.GenerateWorld();
+        _worldGenerator.GenerateBottomRoom();
         _worldVisualData = _worldGenerator.GenerateVisuals(_worldData);
     }
 
@@ -74,6 +76,21 @@ public class WorldStateManager : MonoBehaviour
             }
         }
         return -1;
+    }
+
+    public TileData GetTileType(Vector3Int cords)
+    {
+        Vector2Int chunkCoord = ChunkCordsFromWorld(cords);
+        Vector2Int localTileCoord = LocalTileCordsFromWorld(cords);
+
+        if (_worldData.TryGetValue(chunkCoord, out var chunk))
+        {
+            if (chunk.TryGetValue(localTileCoord, out var tile))
+            {
+                return tile;
+            }
+        }
+        return null;
     }
 
     public InventoryItem GetTileValuable(Vector3Int cords)
@@ -151,7 +168,7 @@ public class WorldStateManager : MonoBehaviour
         return new Vector2Int(dataPos.x * _worldGenerator._chunkSize, dataPos.y * _worldGenerator._chunkSize);
     }
 
-    private Vector2Int ChunkCordsFromWorld(Vector3Int coords)
+    public Vector2Int ChunkCordsFromWorld(Vector3Int coords)
     {
         return new Vector2Int(
             Mathf.FloorToInt((float)coords.x / _worldGenerator._chunkSize),
@@ -159,27 +176,12 @@ public class WorldStateManager : MonoBehaviour
         );
     }
 
-    private Vector2Int LocalTileCordsFromWorld(Vector3Int cords)
+    public Vector2Int LocalTileCordsFromWorld(Vector3Int cords)
     {
         return new Vector2Int(
             Mathf.Abs(cords.x % _worldGenerator._chunkSize),
             Mathf.Abs(cords.y % _worldGenerator._chunkSize)
         );
-    }
-
-    private TileData GetTileData(Vector3Int cords)
-    {
-        Vector2Int chunkCoord = ChunkCordsFromWorld(cords);
-        Vector2Int localTileCoord = LocalTileCordsFromWorld(cords);
-
-        if (_worldData.TryGetValue(chunkCoord, out var chunk))
-        {
-            if (chunk.TryGetValue(localTileCoord, out var tile))
-            {
-                return tile;
-            }
-        }
-        return null;
     }
 
     private void HighLightCell(Vector3Int cords)
@@ -191,7 +193,7 @@ public class WorldStateManager : MonoBehaviour
     private IEnumerator HighLightTimer(Vector3Int cords)
     {
         float timePassed = 0;
-        while(timePassed <= 5)
+        while(timePassed <= _sonarTime)
         {
             yield return null;
             timePassed += Time.deltaTime;

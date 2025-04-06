@@ -16,4 +16,6 @@ MonoBehaviour:
   tileImage: {fileID: 11400000, guid: 010aed71a84542a4ab57254f47f52b3c, type: 2}
   containedValuable: {fileID: 0}
   hardness: -1
+  damageOnContact: 3
+  IsExplosive: 0
   Light: {fileID: 9039426923367549811, guid: 1b0632fb503711748b87d886f9720501, type: 3}

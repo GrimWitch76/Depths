@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.WSA;
 using static UnityEngine.Rendering.DebugUI;
 
 public class GenerateGroundTiles : MonoBehaviour
@@ -12,11 +13,18 @@ public class GenerateGroundTiles : MonoBehaviour
     [SerializeField] public int _chunkSize;
 
     [SerializeField] private TileGenerationRules _defaultTile;
+    [SerializeField] private TileGenerationRules _airTile;
+    [SerializeField] private TileGenerationRules _borderTile;
+    [SerializeField] private TileType _artifactTile;
 
     [SerializeField] private Transform _worldRoot;
     [SerializeField] private Transform _chunkPrefab;
     [SerializeField] private Light _lightPrefab;
     [SerializeField] private List<TileGenerationRules> _genRules;
+
+    [SerializeField] private int _roomWidth;
+    [SerializeField] private int _roomHeight;
+
 
     public Dictionary<Vector2Int, Dictionary<Vector2Int, TileData>> GenerateWorld()
     {
@@ -74,26 +82,104 @@ public class GenerateGroundTiles : MonoBehaviour
             {
                 int globalY = chunkWorldY + y; // Chunk start plus current y pos in chunk;
                 int globalX = chunkCord.x + x; // Chunk start plus current y pos in chunk;
-                TileGenerationRules selectedRule = PickTileForDepth(globalY);
 
-                //This will pull from an array of valid tile data in each world gen data chunk. For now lets manually set it
+                bool isBorder =
+                    (globalX == 0 || globalX == _worldWidth - 1) ||
+                    (globalY == _worldDepth - 1);
+
                 TileData data = new TileData();
-                data.hardness = selectedRule.type.hardness;
-                data.isBroken = false;
-                data.tmpSprite = selectedRule.type.tileImage;
-                data.valuable = selectedRule.type.containedValuable;
-                if(selectedRule.type.Light != null)
+                Vector2Int tilePos = new Vector2Int(x, y);
+
+                if (isBorder)
                 {
-                    Light newLight = GameObject.Instantiate<Light>(selectedRule.type.Light);
-                    newLight.name = selectedRule.name;
-                    newLight.transform.position = new Vector3(globalX + (.5f), (globalY - .5f)*-1, -0.25f);
-                    data.light = newLight;
+  
+                    data.hardness = _borderTile.type.hardness;
+                    data.isBroken = false;
+                    data.tmpSprite = _borderTile.type.tileImage;
+                    data.valuable = _borderTile.type.containedValuable;
+                    data.isExplosive = _borderTile.type.IsExplosive;
+                    data.damageOnContact = _borderTile.type.damageOnContact;
                 }
-                Vector2Int tilePos = new Vector2Int(x,y);
+                else
+                {
+                    TileGenerationRules selectedRule = PickTileForDepth(globalY);
+
+                    //This will pull from an array of valid tile data in each world gen data chunk. For now lets manually set it
+                    data.hardness = selectedRule.type.hardness;
+                    data.isBroken = false;
+                    data.tmpSprite = selectedRule.type.tileImage;
+                    data.valuable = selectedRule.type.containedValuable;
+                    data.isExplosive = selectedRule.type.IsExplosive;
+                    data.damageOnContact = selectedRule.type.damageOnContact;
+
+                    if (selectedRule.type.Light != null)
+                    {
+                        Light newLight = GameObject.Instantiate<Light>(selectedRule.type.Light);
+                        newLight.name = selectedRule.name;
+                        newLight.transform.position = new Vector3(globalX + (.5f), (globalY - .5f) * -1, -0.25f);
+                        data.light = newLight;
+                    }
+                }
+
+             
                 _chunkData.Add(tilePos, data);
             }
         }
         return _chunkData;
+    }
+
+    public void GenerateBottomRoom()
+    {
+        int startX = (_worldWidth / 2) - (_roomWidth / 2);
+        int startY = _worldDepth - _roomHeight; // bottom of world
+
+        for (int x = startX; x < startX + _roomWidth; x++)
+        {
+            for (int y = startY; y < startY + _roomHeight; y++)
+            {
+                Vector3Int WorldPos = new Vector3Int(x, -y, 0);
+                // Set tile to empty space
+                Vector2Int chunkCoord = WorldStateManager.Instance.ChunkCordsFromWorld(WorldPos);
+                Vector2Int localPos = WorldStateManager.Instance.LocalTileCordsFromWorld(WorldPos);
+
+                if (WorldStateManager.Instance._worldData.TryGetValue(chunkCoord, out var chunk) &&
+                    chunk.ContainsKey(localPos))
+                {
+                    TileData data = new TileData();
+                    if ((x == startX || x == startX + _roomWidth -1) || y == startY + _roomHeight -1)
+                    {
+                        data.hardness = _borderTile.type.hardness;
+                        data.isBroken = false;
+                        data.tmpSprite = _borderTile.type.tileImage;
+                        data.valuable = _borderTile.type.containedValuable;
+                        data.isExplosive = _borderTile.type.IsExplosive;
+                        data.damageOnContact = _borderTile.type.damageOnContact;
+                    }
+                    else if (x == startX + (_roomWidth / 2) && y == startY + _roomHeight -2)
+                    {
+                        data.hardness = _artifactTile.hardness;
+                        data.isBroken = false;
+                        data.tmpSprite = _artifactTile.tileImage;
+                        data.valuable = _artifactTile.containedValuable;
+                        data.isExplosive = _artifactTile.IsExplosive;
+                        data.damageOnContact = _artifactTile.damageOnContact;
+                    }
+                    else
+                    {
+                        data.hardness = -1;
+                        data.isBroken = false;
+                        data.tmpSprite = null;
+                        data.valuable = null;
+                        data.isExplosive = false;
+                        data.damageOnContact = 0;
+                    }
+
+                    chunk[localPos] = data;
+                    WorldStateManager.Instance._worldData[chunkCoord] = chunk;
+                }
+
+            }
+        }
     }
 
     private TileGenerationRules PickTileForDepth(int globalY)

@@ -19,3 +19,11 @@ public enum UpgradeType
     FuelCapacity,
     MoveSpeed
 }
+
+public enum OneTimeUpgradeType
+{
+    FlashLight,
+    Sonar,
+    ThermalInsulation,
+    BlastProtection
+}

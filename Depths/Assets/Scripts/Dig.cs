@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -31,12 +32,34 @@ public class Dig : MonoBehaviour
         _activeDiggingPos = cellPos;
         if (WorldStateManager.Instance.IsValidTile(cellPos))
         {
+            //Check for lava
+            if(WorldStateManager.Instance.GetTileType(cellPos).damageOnContact != 0)
+            {
+                if (!_playerShip.ThermalProtectionUpgrade)
+                {
+                    _playerShip.DamageHull(WorldStateManager.Instance.GetTileType(cellPos).damageOnContact);
+                }
+                return;
+            }
+
+            //Check for methane
+            if (WorldStateManager.Instance.GetTileType(cellPos).isExplosive)
+            {
+                if (!_playerShip.BlastProtectionUpgrade)
+                {
+                    _playerShip.DamageHull(UnityEngine.Random.Range(3, 5));
+                }
+                throw new NotImplementedException();
+            }
+
             float hardness = WorldStateManager.Instance.GetTileHardness(cellPos);
             if(hardness == -1)
             {
                 //Can't dig this block
                 return;
             }
+
+
             _isDigging = true;
             StartCoroutine(Digging(hardness, cellPos));
         }

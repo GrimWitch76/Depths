@@ -9,5 +9,7 @@ public class TileType : ScriptableObject
     public TileBase tileImage;
     public InventoryItem containedValuable;
     public float hardness;
+    public int damageOnContact;
+    public bool IsExplosive;
     public Light Light;
 }

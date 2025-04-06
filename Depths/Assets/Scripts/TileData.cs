@@ -8,6 +8,8 @@ public class TileData : MonoBehaviour
     public InventoryItem valuable;
     public float hardness;
     public bool isBroken;
+    public bool isExplosive;
+    public int damageOnContact;
     public Light light;
 }
 
