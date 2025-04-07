@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Iron
   m_EditorClassIdentifier: 
   ItemName: Iron
-  ItemImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  ItemValue: 100
+  ItemImage: {fileID: 21300000, guid: ac6a2eeee17e86447b4a58fd114ecfb1, type: 3}
+  ItemValue: 150

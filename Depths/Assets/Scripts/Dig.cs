@@ -11,6 +11,7 @@ public class Dig : MonoBehaviour
     [SerializeField] private TileBase[] destructionTiles;
     [SerializeField] private GasExplosion _explosionPrefab;
     [SerializeField] private AudioSource _drillSound;
+    [SerializeField] private ParticleSystem _drillParticles;
     public Vector2 _digOffset;
     public Vector3Int _activeDiggingPos;
 
@@ -34,6 +35,7 @@ public class Dig : MonoBehaviour
             _isDigging = false;
             WorldStateManager.Instance.RemoveTileDigEffect(_activeDiggingPos);
             _drillSound.Stop();
+            _drillParticles.Stop();
         }
     }
 
@@ -74,7 +76,7 @@ public class Dig : MonoBehaviour
     {
         float totalDigTime = (_baseDigTime + hardness) / _playerShip.DrillSpeedMultiplier;
         float diggingTime = 0;
-
+        _drillParticles.Play();
         while (_isDigging && diggingTime <= totalDigTime)
         {
             diggingTime += Time.deltaTime;
@@ -115,6 +117,7 @@ public class Dig : MonoBehaviour
         WorldStateManager.Instance.RemoveTile(currentCellPos);
         _isDigging = false;
         _drillSound.Stop();
+        _drillParticles.Stop();
     }
 
     private void CheckForValuables(Vector3Int currentCellPos)

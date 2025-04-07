@@ -44,6 +44,7 @@ public class DrillShip : MonoBehaviour
     [SerializeField] SonarPulse _sonarPulse;
     [SerializeField] DrillShipAnimation _animation;
     [SerializeField] AudioSource _emergancyWarpSound;
+    [SerializeField] AudioSource _sellSound;
 
 
     float _currentFuel;
@@ -92,9 +93,9 @@ public class DrillShip : MonoBehaviour
         _animation.ToggleLights(transform.position.y <= _lightEnableDepth);
 
         _smallLight.enabled = transform.position.y <= _lightEnableDepth;
-        if(_advancedFlashLightUnlocked )
+        if(_advancedFlashLightUnlocked)
         {
-            _smallLight.enabled = transform.position.y <= _lightEnableDepth;
+            _spotLight.enabled = transform.position.y <= _lightEnableDepth;
         }
     }
 
@@ -139,6 +140,7 @@ public class DrillShip : MonoBehaviour
             totalSellValue += item.ItemValue;
         }
         _money += totalSellValue;
+        _sellSound.Play();
         ClearInventory();
         UIManager.Instance.UpdateMoney(_money);
     }
@@ -246,6 +248,7 @@ public class DrillShip : MonoBehaviour
                 break;
             case OneTimeUpgradeType.Sonar:
                 _sonarUnlocked = true;
+                UIManager.Instance.UnlockSonar();
                 break;
             case OneTimeUpgradeType.ThermalInsulation:
                 _thermalInsulationUnlocked = true;
@@ -276,6 +279,7 @@ public class DrillShip : MonoBehaviour
         float timer = 0;
         while(timer <= _sonarCoolDown)
         {
+            UIManager.Instance.SonarCoolDown(timer / _sonarCoolDown);
             timer += Time.deltaTime;
             yield return null;
         }

@@ -15,4 +15,4 @@ MonoBehaviour:
   type: {fileID: 11400000, guid: 7ab0effaee59cb84db7979a4d72b9935, type: 2}
   minDepth: 100
   maxDepth: 250
-  spawnChance: 1
+  spawnChance: 0.05

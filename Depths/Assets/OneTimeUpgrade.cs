@@ -7,7 +7,9 @@ public class OneTimeUpgrade : MonoBehaviour
     [SerializeField] private OneTimeUpgradeType _upgradeType;
     [SerializeField] private Button _upgradeButton;
     [SerializeField] private TextMeshProUGUI _upgradeText;
-    [SerializeField] private Transform _checkMark;
+    [SerializeField] private Image _checkMark;
+    [SerializeField] private Sprite _checkMarkSprite;
+
     [SerializeField] private int _upgradeCost;
 
     private bool _purchased;
@@ -24,12 +26,12 @@ public class OneTimeUpgrade : MonoBehaviour
             WorldStateManager.Instance.DrillShip.ApplyOneTimeUpgrade(_upgradeType);
             UpdateUI();
             WorldStateManager.Instance.DrillShip.DeductMoney(_upgradeCost);
+            _checkMark.sprite = _checkMarkSprite;
         }
     }
 
     public void UpdateUI()
     {
-        _checkMark.gameObject.SetActive(_purchased);
         _upgradeButton.interactable = !_purchased && WorldStateManager.Instance.DrillShip.Money >= _upgradeCost;
         
         if(_purchased)

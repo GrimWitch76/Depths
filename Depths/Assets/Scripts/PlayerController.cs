@@ -122,6 +122,10 @@ public class PlayerController : MonoBehaviour
                 return;
             }
         }
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIManager.Instance.ToggleQuitScreen();
+        }
     }
 
     private void FixedUpdate()

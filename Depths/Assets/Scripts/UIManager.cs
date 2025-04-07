@@ -17,17 +17,23 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform _InventoryFull;
     [SerializeField] private RectTransform _LowFuel;
     [SerializeField] private RectTransform _LowHealth;
+    [SerializeField] private RectTransform _quitGameScreen;
     [SerializeField] private TextMeshProUGUI _moneyText;
     [SerializeField] private TextMeshProUGUI _depthText;
 
     [SerializeField] private Image _healthBarFill;
     [SerializeField] private Image _fuelBarFill;
 
+    [SerializeField] private Image _sonarCoolDownFill;
+    [SerializeField] private RectTransform _sonarTransform;
+
+
     [SerializeField] private float countSpeed = 500f;
+    [SerializeField] private float sonarRemaining = 0;
 
     private int displayedValue = 0;
     private int targetValue = 0;
-
+    private bool _sonarUnlocked = false;
     private void Awake()
     {
         // If there is an instance, and it's not me, delete myself.
@@ -144,6 +150,27 @@ public class UIManager : MonoBehaviour
         _LowHealth.gameObject.SetActive(show);
     }
 
+    public void UnlockSonar()
+    {
+        _sonarTransform.gameObject.SetActive(true);
+        _sonarUnlocked = true;
+    }
+
+    public void SonarCoolDown(float percent)
+    {
+        sonarRemaining = percent;
+    }
+
+    public void ToggleQuitScreen()
+    {
+        _quitGameScreen.gameObject.SetActive(!_quitGameScreen.gameObject.activeInHierarchy);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     private void Update()
     {
 
@@ -153,6 +180,11 @@ public class UIManager : MonoBehaviour
             float dynamicSpeed = Mathf.Max(countSpeed, Mathf.Abs(targetValue - displayedValue) * 3f);
             displayedValue = (int)Mathf.MoveTowards(displayedValue, targetValue, dynamicSpeed * Time.deltaTime);
             _moneyText.text = $"${displayedValue:N0}"; // Adds comma formatting
+        }
+
+        if(_sonarUnlocked)
+        {
+            _sonarCoolDownFill.fillAmount = 1 - sonarRemaining;
         }
     }
 }
