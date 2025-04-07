@@ -15,7 +15,7 @@ MonoBehaviour:
   tileName: Fractured Stone
   tileImage: {fileID: 11400000, guid: b06fda9de40e26c4a83dd8414bde9e49, type: 2}
   containedValuable: {fileID: 0}
-  hardness: 1.25
+  hardness: 1.5
   damageOnContact: 0
   IsExplosive: 0
   Light: {fileID: 0}

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be88fae4b5dfb0e49919cc2dda15ad78, type: 3}
+  m_Name: BedRock_Gold
+  m_EditorClassIdentifier: 
+  tileName: BedRock GOld
+  tileImage: {fileID: 11400000, guid: 11ce7a1bff57c7246a693a73b409a71d, type: 2}
+  containedValuable: {fileID: 11400000, guid: e0b75f295ff1c6c4f9edbe43b252742a, type: 2}
+  hardness: 1.75
+  damageOnContact: 0
+  IsExplosive: 0
+  Light: {fileID: 0}

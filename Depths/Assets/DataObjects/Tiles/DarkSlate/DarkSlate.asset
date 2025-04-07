@@ -15,7 +15,7 @@ MonoBehaviour:
   tileName: Dark Slate
   tileImage: {fileID: 11400000, guid: 7420ccc20eb12e74db2540b629131ded, type: 2}
   containedValuable: {fileID: 0}
-  hardness: 3
+  hardness: 2
   damageOnContact: 0
   IsExplosive: 0
   Light: {fileID: 0}
