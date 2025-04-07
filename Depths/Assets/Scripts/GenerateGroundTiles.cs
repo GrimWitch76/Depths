@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.WSA;
-using static UnityEngine.Rendering.DebugUI;
 
 public class GenerateGroundTiles : MonoBehaviour
 {

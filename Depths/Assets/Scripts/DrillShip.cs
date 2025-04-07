@@ -45,6 +45,7 @@ public class DrillShip : MonoBehaviour
     [SerializeField] DrillShipAnimation _animation;
     [SerializeField] AudioSource _emergancyWarpSound;
     [SerializeField] AudioSource _sellSound;
+    [SerializeField] AudioSource _sonarSound;
 
 
     float _currentFuel;
@@ -56,6 +57,7 @@ public class DrillShip : MonoBehaviour
     private bool _blastProtectionUnlocked = false;
     private bool _sonarOffCooldown = true;
     private bool _gameOver = false;
+    private bool _emergancyWarpActive = false;
     private Vector3 _emergancyWarpLocation;
 
     private void Start()
@@ -267,7 +269,8 @@ public class DrillShip : MonoBehaviour
         {
             return;
         }
-        
+
+        _sonarSound.Play();
         _sonarOffCooldown = false;
         WorldStateManager.Instance.SonarPing(transform.position);
         _sonarPulse.StartPulse();
@@ -288,6 +291,18 @@ public class DrillShip : MonoBehaviour
 
     private void EmergancyWarp()
     {
+        if(!_emergancyWarpActive)
+        {
+            _emergancyWarpActive = true;
+            StartCoroutine(CloseEmergancyWarpText());
+        }
+    }
+
+    private IEnumerator CloseEmergancyWarpText()
+    {
+        UIManager.Instance.ToggleFade(true);
+        yield return new WaitForSecondsRealtime(1);
+
         _currentFuel = _maxFuel / 2;
         _currentHealth = _maxHealth / 2;
         _emergancyWarpSound.Play();
@@ -302,11 +317,9 @@ public class DrillShip : MonoBehaviour
         UIManager.Instance.ShowFuelWarning(false);
         UIManager.Instance.ShowHealthWarning(false);
         ClearInventory();
-        StartCoroutine(CloseEmergancyWarpText());
-    }
-
-    private IEnumerator CloseEmergancyWarpText()
-    {
+        UIManager.Instance.ToggleFade(false);
+        yield return new WaitForSeconds(1f);
+        _emergancyWarpActive = false;
         yield return new WaitForSeconds(3f);
         UIManager.Instance.ToggleEmergancyWarp();
     }

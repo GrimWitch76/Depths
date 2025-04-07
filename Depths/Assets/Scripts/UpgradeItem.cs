@@ -8,6 +8,7 @@ public class UpgradeItem : MonoBehaviour
     [SerializeField] TextMeshProUGUI _upgradeText;
     [SerializeField] TextMeshProUGUI _upgradeButtonText;
     [SerializeField] Button _upgradeButton;
+    [SerializeField] private AudioSource _purchaseSfx;
 
     private int _currentUpgradeLevel = 0;
 
@@ -24,6 +25,7 @@ public class UpgradeItem : MonoBehaviour
             WorldStateManager.Instance.DrillShip.ApplyUpgrade(_upgrade, _currentUpgradeLevel);
             UpdateUI();
             WorldStateManager.Instance.DrillShip.DeductMoney(_upgrade.costPerLevel[_currentUpgradeLevel]);
+            _purchaseSfx.Play();
         }
     }
 

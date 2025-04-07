@@ -9,6 +9,7 @@ public class OneTimeUpgrade : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _upgradeText;
     [SerializeField] private Image _checkMark;
     [SerializeField] private Sprite _checkMarkSprite;
+    [SerializeField] private AudioSource _purchaseSfx;
 
     [SerializeField] private int _upgradeCost;
 
@@ -27,6 +28,8 @@ public class OneTimeUpgrade : MonoBehaviour
             UpdateUI();
             WorldStateManager.Instance.DrillShip.DeductMoney(_upgradeCost);
             _checkMark.sprite = _checkMarkSprite;
+            _purchaseSfx.Play();
+            _upgradeButton.interactable = false;
         }
     }
 

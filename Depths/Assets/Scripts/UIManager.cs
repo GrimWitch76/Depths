@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -27,13 +28,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image _sonarCoolDownFill;
     [SerializeField] private RectTransform _sonarTransform;
 
+    [SerializeField] private Image _fadeImage;
+    [SerializeField] private Color _fadeColour;
+    [SerializeField] private Color _fadeHiddenColour;
+
 
     [SerializeField] private float countSpeed = 500f;
     [SerializeField] private float sonarRemaining = 0;
+    [SerializeField] private float _fadeTime = 0;
 
     private int displayedValue = 0;
     private int targetValue = 0;
     private bool _sonarUnlocked = false;
+    private bool _isFadeVisible = false;
     private void Awake()
     {
         // If there is an instance, and it's not me, delete myself.
@@ -169,6 +176,42 @@ public class UIManager : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void ToggleFade(bool fade)
+    {
+        if(fade)
+        {
+            StartCoroutine(FadeIn());
+        }
+        else
+        {
+            StartCoroutine(FadeOut());
+        }
+    }
+
+    private IEnumerator FadeIn()
+    {
+        float timer = 0;
+        while(timer < _fadeTime)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+            _fadeImage.color = Color.Lerp(_fadeHiddenColour, _fadeColour, timer / _fadeTime);
+        }
+        _fadeImage.color = _fadeColour;
+    }
+
+    private IEnumerator FadeOut()
+    {
+        float timer = 0;
+        while (timer < _fadeTime)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+            _fadeImage.color = Color.Lerp(_fadeColour, _fadeHiddenColour, timer / _fadeTime);
+        }
+        _fadeImage.color = _fadeHiddenColour;
     }
 
     private void Update()
