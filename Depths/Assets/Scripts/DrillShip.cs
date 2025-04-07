@@ -51,7 +51,7 @@ public class DrillShip : MonoBehaviour
     private bool _advancedFlashLightUnlocked = false;
     private bool _sonarUnlocked = false;
     private bool _thermalInsulationUnlocked = false;
-    private bool _blastProtectionUnlocked = true;
+    private bool _blastProtectionUnlocked = false;
     private bool _sonarOffCooldown = true;
     private Vector3 _emergancyWarpLocation;
 
@@ -135,6 +135,18 @@ public class DrillShip : MonoBehaviour
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
         UIManager.Instance.UpdateHealth((float)_currentHealth / (float)_maxHealth);
         if(_currentHealth <= 0)
+        {
+            EmergancyWarp();
+        }
+    }
+
+    public void DamageHullArmourBypass(int DamageValue)
+    {
+        int totalDamage = DamageValue;
+        _currentHealth -= totalDamage;
+        _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
+        UIManager.Instance.UpdateHealth((float)_currentHealth / (float)_maxHealth);
+        if (_currentHealth <= 0)
         {
             EmergancyWarp();
         }

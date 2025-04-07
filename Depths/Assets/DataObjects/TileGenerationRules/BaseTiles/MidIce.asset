@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MidIce
   m_EditorClassIdentifier: 
   type: {fileID: 11400000, guid: b69e77eafea5f11438d2702cf1045f2d, type: 2}
-  minDepth: 20
-  maxDepth: 75
+  minDepth: 15
+  maxDepth: 60
   spawnChance: 0.8

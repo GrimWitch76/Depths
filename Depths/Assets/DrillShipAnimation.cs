@@ -29,9 +29,18 @@ public class DrillShipAnimation : MonoBehaviour
 
     [SerializeField] float _rocketExtendTime = 0.1f;
     [SerializeField] float _drillExtendTime = 0.1f;
-
-
     [SerializeField] float rotationSpeed = 10f;
+
+    [SerializeField] float _idleVolume = 10f;
+    [SerializeField] float _activeVolume = 10f;
+    [SerializeField] float _engineResponsivness = 10f;
+
+    [SerializeField] float _rocketVolume = 10f;
+
+    [SerializeField] AudioSource _engineSounds;
+    [SerializeField] AudioSource _rocketSound;
+
+
     private Vector3 lastMovementDirection = Vector3.forward;
 
     private Vector2 _currentMovementInput = Vector2.left;
@@ -162,6 +171,12 @@ public class DrillShipAnimation : MonoBehaviour
             }
         }
 
+
+        bool isMoving = _currentMovementInput.magnitude > 0.1f;
+
+        float targetVolume = isMoving ? _activeVolume : _idleVolume;
+        _engineSounds.volume = Mathf.Lerp(_engineSounds.volume, targetVolume, _engineResponsivness * Time.deltaTime);
+        _engineSounds.pitch = Mathf.Lerp(_engineSounds.pitch, isMoving ? 1.2f : 1.0f, _engineResponsivness * Time.deltaTime);
     }
 
 
@@ -226,11 +241,14 @@ public class DrillShipAnimation : MonoBehaviour
         float timer = 0;
         while (timer <= _rocketExtendTime)
         {
+            _rocketSound.volume = Mathf.Lerp(_rocketVolume, 0, timer / _rocketExtendTime);
             _leftRocket.transform.localPosition = Vector3.Lerp(_leftRocketExtendPos, _leftRocketRetractPos, timer / _rocketExtendTime);
             _rightRocket.transform.localPosition = Vector3.Lerp(_rightRocketExtendPos, _rightRocketRetractPos, timer / _rocketExtendTime);
             timer += Time.deltaTime;
             yield return null;
         }
+        _rocketSound.volume = 0;
+
         _leftRocket.transform.localPosition = _leftRocketRetractPos;
         _rightRocket.transform.localPosition = _rightRocketRetractPos;
 
@@ -246,11 +264,14 @@ public class DrillShipAnimation : MonoBehaviour
         float timer = 0;
         while (timer <= _rocketExtendTime)
         {
+            _rocketSound.volume = Mathf.Lerp(0, _rocketVolume, timer / _rocketExtendTime);
             _leftRocket.transform.localPosition = Vector3.Lerp(_leftRocketRetractPos, _leftRocketExtendPos, timer / _rocketExtendTime);
             _rightRocket.transform.localPosition = Vector3.Lerp(_rightRocketRetractPos, _rightRocketExtendPos, timer / _rocketExtendTime);
             timer += Time.deltaTime;
             yield return null;
         }
+
+        _rocketSound.volume = _rocketVolume;
         _leftRocket.transform.localPosition = _leftRocketExtendPos;
         _rightRocket.transform.localPosition = _rightRocketExtendPos;
 

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MoltenStone
   m_EditorClassIdentifier: 
   type: {fileID: 11400000, guid: 3fcf8a3536fd88b4281d24c0804f823a, type: 2}
-  minDepth: 325
-  maxDepth: 600
-  spawnChance: 0.15
+  minDepth: 360
+  maxDepth: 390
+  spawnChance: 0.05

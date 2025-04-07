@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: DeepIce
   m_EditorClassIdentifier: 
   type: {fileID: 11400000, guid: 1a22d859b2320aa47bb3cc7a5893028c, type: 2}
-  minDepth: 65
-  maxDepth: 150
+  minDepth: 50
+  maxDepth: 110
   spawnChance: 0.7

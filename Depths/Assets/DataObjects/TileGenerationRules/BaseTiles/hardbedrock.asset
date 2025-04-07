@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: hardbedrock
   m_EditorClassIdentifier: 
   type: {fileID: 11400000, guid: 8ff439cab6141b54e83592f965c0eea8, type: 2}
-  minDepth: 185
-  maxDepth: 300
+  minDepth: 150
+  maxDepth: 250
   spawnChance: 0.4

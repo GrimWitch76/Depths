@@ -9,6 +9,8 @@ public class Dig : MonoBehaviour
     [SerializeField] private DrillShip _playerShip;
     [SerializeField] private float _baseDigTime;
     [SerializeField] private TileBase[] destructionTiles;
+    [SerializeField] private GasExplosion _explosionPrefab;
+    [SerializeField] private AudioSource _drillSound;
     public Vector2 _digOffset;
     public Vector3Int _activeDiggingPos;
 
@@ -31,6 +33,7 @@ public class Dig : MonoBehaviour
             StopAllCoroutines();
             _isDigging = false;
             WorldStateManager.Instance.RemoveTileDigEffect(_activeDiggingPos);
+            _drillSound.Stop();
         }
     }
 
@@ -51,16 +54,7 @@ public class Dig : MonoBehaviour
                 return;
             }
 
-            //Check for methane
-            if (WorldStateManager.Instance.GetTileType(cellPos).isExplosive)
-            {
-                if (!_playerShip.BlastProtectionUpgrade)
-                {
-                    _playerShip.DamageHull(UnityEngine.Random.Range(3, 5));
-                }
-                throw new NotImplementedException();
-            }
-
+           
             float hardness = WorldStateManager.Instance.GetTileHardness(cellPos);
             if(hardness == -1)
             {
@@ -70,6 +64,7 @@ public class Dig : MonoBehaviour
 
 
             _isDigging = true;
+           _drillSound.Play();
             StartCoroutine(Digging(hardness, cellPos));
         }
         
@@ -103,11 +98,24 @@ public class Dig : MonoBehaviour
             yield return null;
         }
 
+        //Check for methane
+        if (WorldStateManager.Instance.GetTileType(currentCellPos).isExplosive)
+        {
+            if (!_playerShip.BlastProtectionUpgrade)
+            {
+                _playerShip.DamageHullArmourBypass(UnityEngine.Random.Range(3, 5));
+            }
+            GasExplosion gasExplosion = Instantiate<GasExplosion>(_explosionPrefab);
+            gasExplosion.transform.position = currentCellPos;
+            gasExplosion.Explode();
+        }
+
+
         CheckForValuables(currentCellPos);
         WorldStateManager.Instance.RemoveTileDigEffect(currentCellPos);
         WorldStateManager.Instance.RemoveTile(currentCellPos);
         _isDigging = false;
-
+        _drillSound.Stop();
     }
 
     private void CheckForValuables(Vector3Int currentCellPos)

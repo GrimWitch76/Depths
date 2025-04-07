@@ -16,7 +16,7 @@ MonoBehaviour:
   _upgradeSprites: []
   level: 0
   maxLevel: 6
-  costPerLevel: c2010000b60300006c070000d80e0000b01d0000
+  costPerLevel: c8000000c20100008403000040060000e40c0000
   valuePerLevel:
   - 1
   - 1.1

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BedRock
   m_EditorClassIdentifier: 
   type: {fileID: 11400000, guid: 607d9607e0805f843b58c4c922e78552, type: 2}
-  minDepth: 145
-  maxDepth: 300
+  minDepth: 100
+  maxDepth: 250
   spawnChance: 0.8

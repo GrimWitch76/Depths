@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BedRock_Methane
   m_EditorClassIdentifier: 
   tileName: Bedrock methane
-  tileImage: {fileID: 11400000, guid: 1588ebe08b73f5045b45922edbe947d5, type: 2}
+  tileImage: {fileID: 11400000, guid: 8b298d3fe3eafe14293413604756c746, type: 2}
   containedValuable: {fileID: 0}
   hardness: 1
   damageOnContact: 0

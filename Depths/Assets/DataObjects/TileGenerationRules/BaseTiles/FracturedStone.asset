@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FracturedStone
   m_EditorClassIdentifier: 
   type: {fileID: 11400000, guid: 239e5691bccfa1147bc4cf805458eea0, type: 2}
-  minDepth: 280
-  maxDepth: 550
+  minDepth: 350
+  maxDepth: 480
   spawnChance: 0.9
