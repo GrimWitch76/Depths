@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TileGenerationRules
   type: {fileID: 11400000, guid: 369b20d5b97eb7e40b2ef0780748c9be, type: 2}
   minDepth: 0
-  maxDepth: 12
+  maxDepth: 30
   spawnChance: 0.9

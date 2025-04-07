@@ -18,6 +18,7 @@ public class WorldStateManager : MonoBehaviour
 
 
     public Dictionary<Vector2Int, Dictionary<Vector2Int, TileData>> _worldData;
+    public Dictionary<Vector2Int, Dictionary<Vector2Int, TileData>> _backGroundWorldData;
     public Dictionary<Vector2Int, Tilemap> _worldVisualData;
 
 
@@ -165,7 +166,7 @@ public class WorldStateManager : MonoBehaviour
 
     private Vector2Int DataPosToVisualPos(Vector2Int dataPos)
     {
-        return new Vector2Int(dataPos.x * _worldGenerator._chunkSize, dataPos.y * _worldGenerator._chunkSize);
+        return new Vector2Int(dataPos.x * _worldGenerator._chunkSize, (dataPos.y * _worldGenerator._chunkSize) *-1);
     }
 
     public Vector2Int ChunkCordsFromWorld(Vector3Int coords)

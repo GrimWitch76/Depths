@@ -18,6 +18,8 @@ public class DrillShipAnimation : MonoBehaviour
     [SerializeField] GameObject[] _thermalVents;
     [SerializeField] GameObject[] _blastProtection;
 
+    [SerializeField] Material _lightMaterial;
+
     [SerializeField] Vector3 _leftRocketRetractPos;
     [SerializeField] Vector3 _rightRocketRetractPos;
     [SerializeField] Vector3 _leftRocketExtendPos;
@@ -83,6 +85,17 @@ public class DrillShipAnimation : MonoBehaviour
     public void SetDiggingHorizontal(bool diggingHorizontal)
     {
         _isDiggingSideWays = diggingHorizontal;
+    }
+    public void ToggleLights(bool lightsOn)
+    {
+        if(lightsOn)
+        {
+            _lightMaterial.EnableKeyword("_EMISSION");
+        }
+        else
+        {
+            _lightMaterial.DisableKeyword("_EMISSION");
+        }
     }
 
     void Update()

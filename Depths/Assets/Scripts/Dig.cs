@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.Windows;
 
 public class Dig : MonoBehaviour
 {
@@ -12,11 +13,19 @@ public class Dig : MonoBehaviour
     public Vector3Int _activeDiggingPos;
 
     private bool _isDigging = false;
+    private bool _touchingTile = false;
 
     public void SetDigOffset(Vector2 digOffset)
     {
-        _digOffset = digOffset;
-
+        if(digOffset.y != 0)
+        {
+            _digOffset = new Vector2(0, digOffset.y);
+        }
+        else
+        {
+            _digOffset = digOffset;
+        }
+     
         if(_isDigging && _digOffset == Vector2.zero)
         {
             StopAllCoroutines();
@@ -110,7 +119,7 @@ public class Dig : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D collision)
     {
         //Maybe make dig colliders?
         if (_digOffset != Vector2.zero && !_isDigging)

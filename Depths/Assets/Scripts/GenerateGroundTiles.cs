@@ -16,9 +16,11 @@ public class GenerateGroundTiles : MonoBehaviour
     [SerializeField] private TileGenerationRules _airTile;
     [SerializeField] private TileGenerationRules _borderTile;
     [SerializeField] private TileType _artifactTile;
+    [SerializeField] private TileType _roomBorderTile;
 
     [SerializeField] private Transform _worldRoot;
     [SerializeField] private Transform _chunkPrefab;
+    [SerializeField] private Transform _backgroundChunkPrefab;
     [SerializeField] private Light _lightPrefab;
     [SerializeField] private List<TileGenerationRules> _genRules;
 
@@ -56,6 +58,19 @@ public class GenerateGroundTiles : MonoBehaviour
             grid.transform.position = new Vector3Int(chunk.Key.x * _chunkSize, chunk.Key.y * _chunkSize * -1, 0);
             Tilemap tileMap = grid.GetComponent<Tilemap>();
             _worldVisualGridsData.Add(new Vector2Int(chunk.Key.x * _chunkSize, chunk.Key.y * _chunkSize * -1), tileMap);
+
+            foreach (var tile in chunk.Value)
+            {
+                Vector3Int tilePos = new Vector3Int(
+                    tile.Key.x,
+                    tile.Key.y * -1,
+                    0);
+                tileMap.SetTile(tilePos, tile.Value.tmpSprite);
+            }
+
+            Transform backgrid = Instantiate(_backgroundChunkPrefab, _worldRoot);
+            backgrid.transform.position = new Vector3Int(chunk.Key.x * _chunkSize, chunk.Key.y * _chunkSize * -1, 1);
+            tileMap = backgrid.GetComponent<Tilemap>();
 
             foreach (var tile in chunk.Value)
             {
@@ -148,10 +163,10 @@ public class GenerateGroundTiles : MonoBehaviour
                     TileData data = new TileData();
                     if ((x == startX || x == startX + _roomWidth -1) || y == startY + _roomHeight -1)
                     {
-                        data.hardness = _borderTile.type.hardness;
+                        data.hardness = -1;
                         data.isBroken = false;
-                        data.tmpSprite = _borderTile.type.tileImage;
-                        data.valuable = _borderTile.type.containedValuable;
+                        data.tmpSprite = _roomBorderTile.tileImage;
+                        data.valuable = null;
                         data.isExplosive = _borderTile.type.IsExplosive;
                         data.damageOnContact = _borderTile.type.damageOnContact;
                     }
@@ -204,3 +219,4 @@ public class GenerateGroundTiles : MonoBehaviour
     }
 
 }
+ 

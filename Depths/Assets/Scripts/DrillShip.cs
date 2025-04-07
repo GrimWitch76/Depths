@@ -36,6 +36,7 @@ public class DrillShip : MonoBehaviour
     [SerializeField] int _currentArmour;
     [SerializeField] int _inventorySlots;
     [SerializeField] int _money;
+    [SerializeField] int _lightEnableDepth;
 
 
     [SerializeField] Light _smallLight;
@@ -76,10 +77,12 @@ public class DrillShip : MonoBehaviour
 
         ChangeFuelLevel(finalFuelDrain *-1);
 
-        _smallLight.enabled = transform.position.y <= -50;
+        _animation.ToggleLights(transform.position.y <= _lightEnableDepth);
+
+        _smallLight.enabled = transform.position.y <= _lightEnableDepth;
         if(_advancedFlashLightUnlocked )
         {
-            _smallLight.enabled = transform.position.y <= -50;
+            _smallLight.enabled = transform.position.y <= _lightEnableDepth;
         }
     }
 
