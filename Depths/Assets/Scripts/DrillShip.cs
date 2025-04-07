@@ -110,6 +110,11 @@ public class DrillShip : MonoBehaviour
             return false;
         }
 
+        if (_inventory.Count+1 >= _inventorySlots)
+        {
+            UIManager.Instance.ShowInventoryFull(true);
+        }
+
         _inventory.Add(item);
         UIManager.Instance.AddInventoryItem(item);
         return true;
@@ -117,7 +122,13 @@ public class DrillShip : MonoBehaviour
 
     public void ClearInventory()
     {
+        if (_inventory == null)
+        {
+            _inventory = new List<InventoryItem>();
+        }
         _inventory.Clear();
+        UIManager.Instance.ClearInventory();
+        UIManager.Instance.ShowInventoryFull(false);
     }
 
     public void SellInventory()
@@ -129,7 +140,12 @@ public class DrillShip : MonoBehaviour
         }
         _money += totalSellValue;
         ClearInventory();
-        UIManager.Instance.ClearInventory();
+        UIManager.Instance.UpdateMoney(_money);
+    }
+
+    public void DeductMoney(int amount)
+    {
+        _money -= amount;
         UIManager.Instance.UpdateMoney(_money);
     }
 
@@ -139,6 +155,7 @@ public class DrillShip : MonoBehaviour
         _money -= (int)fillAmmount * 2;
         UIManager.Instance.UpdateMoney(_money);
         ChangeFuelLevel(fillAmmount);
+        UIManager.Instance.ShowFuelWarning(false);
     }
 
     public void DamageHull(int DamageValue)
@@ -147,6 +164,10 @@ public class DrillShip : MonoBehaviour
         _currentHealth-= totalDamage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
         UIManager.Instance.UpdateHealth((float)_currentHealth / (float)_maxHealth);
+        if(_currentHealth <= _maxHealth * 0.2f)
+        {
+            UIManager.Instance.ShowHealthWarning(true);
+        }
         if(_currentHealth <= 0)
         {
             EmergancyWarp();
@@ -172,14 +193,19 @@ public class DrillShip : MonoBehaviour
         UIManager.Instance.UpdateMoney(_money);
         _currentHealth = Mathf.Clamp(_currentHealth + healAmmount, 0, _maxHealth);
         UIManager.Instance.UpdateHealth((float)_currentHealth / (float)_maxHealth);
+        UIManager.Instance.ShowHealthWarning(false);
     }
 
     private void ChangeFuelLevel(float change)
     {
         _currentFuel = Mathf.Clamp(_currentFuel + change, 0, _maxFuel);
         UIManager.Instance.UpdateFuel(_currentFuel/_maxFuel);
+        if (_currentFuel <= _maxFuel * 0.2f)
+        {
+            UIManager.Instance.ShowFuelWarning(true);
+        }
 
-        if(_currentFuel <= 0)
+        if (_currentFuel <= 0)
         {
             EmergancyWarp();
         }
@@ -268,6 +294,10 @@ public class DrillShip : MonoBehaviour
         UIManager.Instance.ToggleEmergancyWarp();
         UIManager.Instance.UpdateHealth(0.5f);
         UIManager.Instance.UpdateFuel(0.5f);
+        UIManager.Instance.ShowInventoryFull(false);
+        UIManager.Instance.ShowFuelWarning(false);
+        UIManager.Instance.ShowHealthWarning(false);
+        ClearInventory();
         StartCoroutine(CloseEmergancyWarpText());
     }
 

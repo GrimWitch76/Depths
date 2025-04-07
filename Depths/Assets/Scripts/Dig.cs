@@ -78,7 +78,6 @@ public class Dig : MonoBehaviour
         while (_isDigging && diggingTime <= totalDigTime)
         {
             diggingTime += Time.deltaTime;
-            Debug.Log("Digging: " + diggingTime + " / " + totalDigTime);
 
             switch ((diggingTime / totalDigTime) * 100)
             {

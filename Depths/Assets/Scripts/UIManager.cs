@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,11 +14,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform _fuelPrompt;
     [SerializeField] private RectTransform _repairPrompt;
     [SerializeField] private RectTransform _upgradePrompt;
+    [SerializeField] private RectTransform _InventoryFull;
+    [SerializeField] private RectTransform _LowFuel;
+    [SerializeField] private RectTransform _LowHealth;
     [SerializeField] private TextMeshProUGUI _moneyText;
     [SerializeField] private TextMeshProUGUI _depthText;
 
     [SerializeField] private Image _healthBarFill;
     [SerializeField] private Image _fuelBarFill;
+
+    [SerializeField] private float countSpeed = 500f;
+
+    private int displayedValue = 0;
+    private int targetValue = 0;
 
     private void Awake()
     {
@@ -114,7 +123,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateMoney(int money)
     {
-        _moneyText.text = "$" + money;
+        targetValue = money;
     }
 
     public void UpdateDepth(int depth)
@@ -122,4 +131,28 @@ public class UIManager : MonoBehaviour
         _depthText.text = depth.ToString() + " M";
     }
 
+    public void ShowInventoryFull(bool show)
+    {
+        _InventoryFull.gameObject.SetActive(show);
+    }
+    public void ShowFuelWarning(bool show)
+    {
+        _LowFuel.gameObject.SetActive(show);
+    }
+    public void ShowHealthWarning(bool show)
+    {
+        _LowHealth.gameObject.SetActive(show);
+    }
+
+    private void Update()
+    {
+
+        if (displayedValue != targetValue)
+        {
+            // Move towards the target value
+            float dynamicSpeed = Mathf.Max(countSpeed, Mathf.Abs(targetValue - displayedValue) * 3f);
+            displayedValue = (int)Mathf.MoveTowards(displayedValue, targetValue, dynamicSpeed * Time.deltaTime);
+            _moneyText.text = $"${displayedValue:N0}"; // Adds comma formatting
+        }
+    }
 }

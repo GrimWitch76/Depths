@@ -8,6 +8,7 @@ TagManager:
   - FuelDepot
   - UpgradeShop
   - RepairDepot
+  - EndArtifact
   layers:
   - Default
   - TransparentFX

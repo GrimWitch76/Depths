@@ -50,7 +50,15 @@ public class DrillShipAnimation : MonoBehaviour
     private bool _verticalDrillExtended = false;
     private bool _horizontalDrillExtended = false;
     private bool _rocketsExtended = false;
+    private bool _gameOver = false;
 
+
+    public void GameOver()
+    {
+        _gameOver = true;
+        StartCoroutine(FadeOutAudio());
+
+    }
     public void EnableUpgrade(OneTimeUpgradeType upgrade)
     {
         switch (upgrade)
@@ -109,6 +117,11 @@ public class DrillShipAnimation : MonoBehaviour
 
     void Update()
     {
+        if(_gameOver)
+        {
+            return;
+        }
+
         if (Mathf.Abs(_currentMovementInput.x) > 0.01f)
         {
             //float targetYRotation = _currentMovementInput.x > 0 ? 0f : 180f;
@@ -280,5 +293,22 @@ public class DrillShipAnimation : MonoBehaviour
 
         _leftRocketParticles.Play();
         _rightRocketParticles.Play();
+    }
+
+    private IEnumerator FadeOutAudio()
+    {
+        float timer = 0;
+        float engineStartVolume = _engineSounds.volume;
+        float rocketStartVolume = _rocketSound.volume;
+        while (timer <= 0.5f)
+        {
+            yield return null;
+            timer += Time.deltaTime;
+            _engineSounds.volume = Mathf.Lerp(engineStartVolume, 0, timer/ 0.5f);
+            _rocketSound.volume = Mathf.Lerp(rocketStartVolume, 0, timer / 0.5f);
+        }
+        _engineSounds.volume = 0f;
+        _rocketSound.volume = 0f;
+
     }
 }

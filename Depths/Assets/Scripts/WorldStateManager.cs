@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
 public class WorldStateManager : MonoBehaviour
@@ -157,6 +158,11 @@ public class WorldStateManager : MonoBehaviour
                 HighLightCell(checkCell); // See below
             }
         }
+    }
+
+    public void LoadMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
     public Vector3Int GridPosFromWorld(Vector3 worldPos)

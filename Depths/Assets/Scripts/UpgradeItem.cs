@@ -23,15 +23,16 @@ public class UpgradeItem : MonoBehaviour
             _currentUpgradeLevel++;
             WorldStateManager.Instance.DrillShip.ApplyUpgrade(_upgrade, _currentUpgradeLevel);
             UpdateUI();
+            WorldStateManager.Instance.DrillShip.DeductMoney(_upgrade.costPerLevel[_currentUpgradeLevel]);
         }
     }
 
     public void UpdateUI()
     {
-        if(_currentUpgradeLevel != _upgrade.maxLevel)
+        if(_currentUpgradeLevel+1 != _upgrade.maxLevel)
         {
-            _upgradeButton.interactable = WorldStateManager.Instance.DrillShip.Money >= _upgrade.costPerLevel[_currentUpgradeLevel + 1];
-            _upgradeButtonText.text = "Upgrade" + "\n" + "$" + _upgrade.costPerLevel[_currentUpgradeLevel + 1];
+            _upgradeButton.interactable = WorldStateManager.Instance.DrillShip.Money >= _upgrade.costPerLevel[_currentUpgradeLevel];
+            _upgradeButtonText.text = "Upgrade" + "\n" + "$" + _upgrade.costPerLevel[_currentUpgradeLevel];
         }
         else
         {

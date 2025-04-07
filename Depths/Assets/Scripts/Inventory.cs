@@ -57,11 +57,16 @@ public class Inventory : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        UpdateInventoryCount();
+        UpdateInventoryCountToZero();
     }
 
     private void UpdateInventoryCount()
     {
         _inventoryCapacityText.text = _scrollArea.transform.childCount.ToString() + "/" + WorldStateManager.Instance.DrillShip.InventorySlots;
+    }
+
+    private void UpdateInventoryCountToZero()
+    {
+        _inventoryCapacityText.text = 0 + "/" + WorldStateManager.Instance.DrillShip.InventorySlots;
     }
 }

@@ -23,6 +23,7 @@ public class OneTimeUpgrade : MonoBehaviour
         {
             WorldStateManager.Instance.DrillShip.ApplyOneTimeUpgrade(_upgradeType);
             UpdateUI();
+            WorldStateManager.Instance.DrillShip.DeductMoney(_upgradeCost);
         }
     }
 
