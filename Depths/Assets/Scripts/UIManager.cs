@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Inventory _inventory;
     [SerializeField] private Inventory _upgradeScreen;
     [SerializeField] private RectTransform _sellPrompt;
+    [SerializeField] private RectTransform _emergancyWarpPopup;
     [SerializeField] private RectTransform _fuelPrompt;
     [SerializeField] private RectTransform _repairPrompt;
     [SerializeField] private RectTransform _upgradePrompt;
@@ -94,6 +95,11 @@ public class UIManager : MonoBehaviour
     public void ToggleUpgradePrompt()
     {
         _upgradeScreen.gameObject.SetActive(!_upgradeScreen.gameObject.activeInHierarchy);
+    }
+
+    public void ToggleEmergancyWarp()
+    {
+        _emergancyWarpPopup.gameObject.SetActive(!_emergancyWarpPopup.gameObject.activeInHierarchy);
     }
 
     public void UpdateHealth(float percent)

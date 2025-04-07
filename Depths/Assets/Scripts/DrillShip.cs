@@ -43,6 +43,7 @@ public class DrillShip : MonoBehaviour
     [SerializeField] Light _spotLight;
     [SerializeField] SonarPulse _sonarPulse;
     [SerializeField] DrillShipAnimation _animation;
+    [SerializeField] AudioSource _emergancyWarpSound;
 
 
     float _currentFuel;
@@ -53,6 +54,7 @@ public class DrillShip : MonoBehaviour
     private bool _thermalInsulationUnlocked = false;
     private bool _blastProtectionUnlocked = false;
     private bool _sonarOffCooldown = true;
+    private bool _gameOver = false;
     private Vector3 _emergancyWarpLocation;
 
     private void Start()
@@ -67,8 +69,18 @@ public class DrillShip : MonoBehaviour
         _isMoving = isMoving;
     }
 
+    public void GameOver()
+    {
+        _gameOver = true;
+    }
+
     private void FixedUpdate()
     {
+        if (_gameOver)
+        {
+            return;
+        }
+
         float finalFuelDrain = _passiveDrainRate;
         if(_isMoving)
         {
@@ -125,6 +137,7 @@ public class DrillShip : MonoBehaviour
     {
         float fillAmmount = _maxFuel - _currentFuel;
         _money -= (int)fillAmmount * 2;
+        UIManager.Instance.UpdateMoney(_money);
         ChangeFuelLevel(fillAmmount);
     }
 
@@ -156,7 +169,7 @@ public class DrillShip : MonoBehaviour
     {
         int healAmmount = _maxHealth - _currentHealth;
         _money -= (int)healAmmount * 10;
-
+        UIManager.Instance.UpdateMoney(_money);
         _currentHealth = Mathf.Clamp(_currentHealth + healAmmount, 0, _maxHealth);
         UIManager.Instance.UpdateHealth((float)_currentHealth / (float)_maxHealth);
     }
@@ -247,12 +260,20 @@ public class DrillShip : MonoBehaviour
     {
         _currentFuel = _maxFuel / 2;
         _currentHealth = _maxHealth / 2;
-
+        _emergancyWarpSound.Play();
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         rb.linearVelocity = Vector2.zero;
         transform.position = _emergancyWarpLocation;
 
+        UIManager.Instance.ToggleEmergancyWarp();
         UIManager.Instance.UpdateHealth(0.5f);
         UIManager.Instance.UpdateFuel(0.5f);
+        StartCoroutine(CloseEmergancyWarpText());
+    }
+
+    private IEnumerator CloseEmergancyWarpText()
+    {
+        yield return new WaitForSeconds(3f);
+        UIManager.Instance.ToggleEmergancyWarp();
     }
 }

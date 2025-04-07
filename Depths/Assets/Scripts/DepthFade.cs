@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class DepthFade : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class DepthFade : MonoBehaviour
 
     [SerializeField] private float _minDepthRed = -800f;
     [SerializeField] private float _maxDepthRed = -950f;
+
+
+
 
     private GameObject _player;
     void Update()
@@ -38,5 +42,6 @@ public class DepthFade : MonoBehaviour
             _mainLight.intensity = t;
             _mainLight.color = ambient;
         }
+
     }
 }

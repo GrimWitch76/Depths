@@ -170,15 +170,6 @@ public class GenerateGroundTiles : MonoBehaviour
                         data.isExplosive = _borderTile.type.IsExplosive;
                         data.damageOnContact = _borderTile.type.damageOnContact;
                     }
-                    else if (x == startX + (_roomWidth / 2) && y == startY + _roomHeight -2)
-                    {
-                        data.hardness = _artifactTile.hardness;
-                        data.isBroken = false;
-                        data.tmpSprite = _artifactTile.tileImage;
-                        data.valuable = _artifactTile.containedValuable;
-                        data.isExplosive = _artifactTile.IsExplosive;
-                        data.damageOnContact = _artifactTile.damageOnContact;
-                    }
                     else
                     {
                         data.hardness = -1;

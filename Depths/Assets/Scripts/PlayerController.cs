@@ -19,13 +19,24 @@ public class PlayerController : MonoBehaviour
     private bool _canRefuel = false;
     private bool _canRepair = false;
     private bool _canUpgrade = false;
+    private bool _gameOver = false;
 
     private void Start()
     {
         _drillCollider = _dig.GetComponent<Collider2D>();
     }
+
+    public void GameOver()
+    {
+        _gameOver = true;
+    }
+
     void Update()
     {
+        if(_gameOver)
+        {
+            return;
+        }
         if(Input.GetKeyDown(KeyCode.A))
         {
             _playerMovementInput += Vector2.left;
@@ -115,6 +126,10 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(_gameOver)
+        {
+            return;
+        }
 
         if (_playerMovementInput == Vector2.zero)
         {
@@ -163,6 +178,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if(_gameOver)
+        {
+            return;
+        }
+
         Vector2 velocity = collision.relativeVelocity;
 
         if(velocity.magnitude > WorldStateManager.Instance.DrillShip.MinSpeedForDamage)
@@ -174,6 +194,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (_gameOver)
+        {
+            return;
+        }
+
         if (collision.CompareTag("Factory"))
         {
             _canSell = true;
@@ -197,10 +222,20 @@ public class PlayerController : MonoBehaviour
             _canRepair = true;
             UIManager.Instance.ShowRepairPrompt();
         }
+
+        if(collision.CompareTag("EndArtifact"))
+        {
+            GameEndManager.Instance.TriggerGameEndSequence();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (_gameOver)
+        {
+            return;
+        }
+
         if (collision.CompareTag("Factory"))
         {
             _canSell = false;
