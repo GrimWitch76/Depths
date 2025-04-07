@@ -37,6 +37,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float sonarRemaining = 0;
     [SerializeField] private float _fadeTime = 0;
 
+    [SerializeField] private AudioSource _refillSound;
+    [SerializeField] private AudioSource _repairSound;
+
     private int displayedValue = 0;
     private int targetValue = 0;
     private bool _sonarUnlocked = false;
@@ -178,6 +181,16 @@ public class UIManager : MonoBehaviour
         Application.Quit();
     }
 
+    public void PlayRefuelSound()
+    {
+       _refillSound.Play();
+    }
+
+    public void PlayRepairSound()
+    {
+        _repairSound.Play();
+    }
+
     public void ToggleFade(bool fade)
     {
         if(fade)
@@ -221,7 +234,7 @@ public class UIManager : MonoBehaviour
         {
             // Move towards the target value
             float dynamicSpeed = Mathf.Max(countSpeed, Mathf.Abs(targetValue - displayedValue) * 3f);
-            displayedValue = (int)Mathf.MoveTowards(displayedValue, targetValue, dynamicSpeed * Time.deltaTime);
+            displayedValue = (int)Mathf.MoveTowards(displayedValue, targetValue, countSpeed * Time.deltaTime);
             _moneyText.text = $"${displayedValue:N0}"; // Adds comma formatting
         }
 

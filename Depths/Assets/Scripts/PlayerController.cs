@@ -105,6 +105,7 @@ public class PlayerController : MonoBehaviour
                 _canRefuel = false;
                 WorldStateManager.Instance.DrillShip.FillFuelTank();
                 UIManager.Instance.HideFuelPrompt();
+                UIManager.Instance.PlayRefuelSound();
                 return;
             }
 
@@ -119,6 +120,7 @@ public class PlayerController : MonoBehaviour
                 _canRepair = false;
                 WorldStateManager.Instance.DrillShip.HealHull();
                 UIManager.Instance.HideRepairPrompt();
+                UIManager.Instance.PlayRepairSound();
                 return;
             }
         }
